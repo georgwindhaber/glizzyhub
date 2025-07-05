@@ -1,4 +1,4 @@
-import { channels, channels, videos } from "../database/schema";
+import { channels, videos } from "../database/schema";
 import { youtubeChannels } from "../utils/channels";
 import { Channel, Videos } from "../utils/drizzle";
 import { z } from "zod";
@@ -63,9 +63,7 @@ const fetchVideosFromPlaylist = async (
 
   const videoDetails = (await fetchVideoDetails(
     playlist.items.map((item) => item.contentDetails.videoId)
-  )) as { items: [] };
-
-  const now = new Date();
+  )) as any;
 
   const mappedVideoDetails: Array<Omit<Videos, "videoId">> =
     videoDetails.items.map((video) => ({
@@ -82,7 +80,7 @@ const fetchVideosFromPlaylist = async (
       viewCount: video.statistics.viewCount,
       likeCount: video.statistics.likeCount,
       commentCount: video.statistics.commentCount,
-      lastUpdatedAt: now,
+      lastUpdatedAt: new Date(),
     }));
 
   await useDrizzle()
