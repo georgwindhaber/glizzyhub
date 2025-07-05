@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { parse } from "iso8601-duration";
 const videosData = await useFetch("/api/videos");
 </script>
 
@@ -9,9 +8,13 @@ const videosData = await useFetch("/api/videos");
       <li
         v-for="video of videosData.data.value"
         :key="video.youtubeVideoId"
-        class="flex flex-col gap-2"
+        class="flex flex-col gap-2 rounded-xl"
       >
-        <div class="relative">
+        <nuxt-link
+          class="relative"
+          :href="`https://youtube.com/watch?v=${video.youtubeVideoId}`"
+          target="_blank"
+        >
           <img
             :src="video.thumbnail"
             :alt="video.title"
@@ -20,23 +23,42 @@ const videosData = await useFetch("/api/videos");
           <div
             class="bg-gray-900/90 text-white absolute bottom-2 right-2 rounded px-2"
           >
-            {{ durationFormat(video.duration) }}
+            {{ formatDuration(video.duration) }}
           </div>
-        </div>
+        </nuxt-link>
+
         <div class="flex gap-2">
-          <div>
-            <img :src="video.channelThumbnail" class="rounded-full size-12" />
+          <div class="w-fit">
+            <nuxt-link
+              class="relative"
+              :href="`https://youtube.com/${video.channelHandle}`"
+              target="_blank"
+            >
+              <img :src="video.channelThumbnail" class="rounded-full size-12" />
+            </nuxt-link>
           </div>
-          <div class="flex flex-col">
-            <div class="font-bold">
+
+          <div class="flex flex-col flex-1">
+            <nuxt-link
+              class="font-bold text-lg"
+              :href="`https://youtube.com/watch?v=${video.youtubeVideoId}`"
+              target="_blank"
+            >
               {{ video.title }}
-            </div>
-            <div class="flex flex-col text-gray-800">
+            </nuxt-link>
+            <div class="flex flex-col text-gray-700">
               <div>
-                {{ video.channelName }}
+                <nuxt-link
+                  class="hover:text-black"
+                  :href="`https://youtube.com/${video.channelHandle}`"
+                  target="_blank"
+                >
+                  {{ video.channelName }}
+                </nuxt-link>
               </div>
               <div>
-                {{ video.publishedAt }}
+                {{ formatViews(video.views) }} views -
+                {{ new Date(video.publishedAt).toLocaleString() }}
               </div>
             </div>
           </div>

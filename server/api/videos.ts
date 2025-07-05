@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
       youtubeVideoId: videos.youtubeVideoId,
       channelName: channels.name,
       channelThumbnail: channels.mediumThumbnailUrl,
+      channelHandle: channels.handle,
     })
     .from(videos)
     .leftJoin(channels, eq(videos.channelId, channels.channelId));
