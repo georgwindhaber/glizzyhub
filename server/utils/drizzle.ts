@@ -14,3 +14,4 @@ export function useDrizzle() {
 }
 
 export type Channel = typeof schema.channels.$inferSelect;
+export type Videos = typeof schema.videos.$inferSelect;

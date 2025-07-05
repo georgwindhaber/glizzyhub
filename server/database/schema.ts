@@ -22,7 +22,11 @@ export const videos = sqliteTable("videos", {
   smallThumbnailUrl: text("small_thumbnail_url"),
   mediumThumbnailUrl: text("medium_thumbnail_url"),
   highThumbnailUrl: text("high_thumbnail_url"),
-  standard_ThumbnailUrl: text("standard_thumbnail_url"),
-  maxres_ThumbnailUrl: text("maxres_thumbnail_url"),
+  standardThumbnailUrl: text("standard_thumbnail_url"),
+  maxresThumbnailUrl: text("maxres_thumbnail_url"),
+  duration: text("duration"),
+  viewCount: integer("view_count"),
+  likeCount: integer("like_count"),
+  commentCount: integer("comment_count"),
   lastUpdatedAt: integer("last_updated_at", { mode: "timestamp" }),
 });
