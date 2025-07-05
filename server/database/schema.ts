@@ -15,6 +15,9 @@ export const channels = sqliteTable("channels", {
 
 export const videos = sqliteTable("videos", {
   videoId: integer("video_id").primaryKey({ autoIncrement: true }),
+  channelId: integer("channel_id")
+    .references(() => channels.channelId)
+    .notNull(),
   youtubeVideoId: text("youtube_video_id").notNull().unique(),
   publishedAt: integer("published_at", { mode: "timestamp" }),
   title: text("title").notNull(),

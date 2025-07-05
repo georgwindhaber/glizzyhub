@@ -42,6 +42,7 @@ const fetchVideoDetails = async (videoIds: Array<string>) => {
 
 const fetchVideosFromPlaylist = async (
   playlistId: string,
+  channelId: number,
   pageToken?: string
 ) => {
   const params = new URLSearchParams({
@@ -68,6 +69,7 @@ const fetchVideosFromPlaylist = async (
   const mappedVideoDetails: Array<Omit<Videos, "videoId">> =
     videoDetails.items.map((video) => ({
       youtubeVideoId: video.id,
+      channelId,
       publishedAt: new Date(video.snippet.publishedAt),
       title: video.snippet.title,
       description: video.snippet.description,
@@ -117,7 +119,10 @@ export const seedYoutubeVideos = async () => {
 
   const channel = existingChannels[0];
 
-  const result = fetchVideosFromPlaylist(channel.allVideosPlaylist);
+  const result = fetchVideosFromPlaylist(
+    channel.allVideosPlaylist,
+    channel.channelId
+  );
 
   // for (const channel of existingChannels) {
   // }
