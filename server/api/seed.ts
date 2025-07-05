@@ -48,8 +48,10 @@ export const seedYoutubeChannels = async () => {
 
   for (const channel of channelDbResult) {
     const playlist = await fetch(
-      `https://www.googleapis.com/youtube/v3/playlistItems?key=${process.env.YOUTUBE_API_KEY}&playlistId=${channel.allVideosPlaylist}&part=snippet&maxResults=10`
+      `https://www.googleapis.com/youtube/v3/playlistItems?key=${process.env.YOUTUBE_API_KEY}&playlistId=${channel.allVideosPlaylist}&part=id&maxResults=100`
     );
+
+    console.log(await playlist.json());
   }
 
   return mappedChannelData;
