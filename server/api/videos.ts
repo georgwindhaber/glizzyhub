@@ -1,3 +1,5 @@
+import { channels } from "../database/schema";
+
 const apiKey = "AIzaSyDF4tS7MQhy70PBLHZk47FcZHwwtElTJGc";
 const channelId = "UCtoaZpBnrd0lhycxYJ4MNOQ";
 
@@ -8,13 +10,17 @@ export default defineEventHandler(async (event) => {
 
   const channelResults = await channel.json();
 
-  const playlist = await fetch(
-    `https://www.googleapis.com/youtube/v3/playlistItems?key=${apiKey}&playlistId=${channelResults.items[0].contentDetails.relatedPlaylists.uploads}&part=snippet&maxResults=6`
-  );
+  console.log(channelResults.items[0].contentDetails);
 
-  const result = await playlist.json();
+  // const playlist = await fetch(
+  //   `https://www.googleapis.com/youtube/v3/playlistItems?key=${apiKey}&playlistId=${channelResults.items[0].contentDetails.relatedPlaylists.uploads}&part=snippet&maxResults=6`
+  // );
 
-  console.log(result, result.error, channelResults.items[0].contentDetails);
+  // const result = await playlist.json();
 
-  return result;
+  const videosResult = await useDrizzle().select().from(channels);
+
+  console.log(videosResult);
+
+  return videosResult;
 });

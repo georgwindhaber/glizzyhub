@@ -12,3 +12,5 @@ export function useDrizzle() {
     { schema }
   );
 }
+
+export type Channel = typeof schema.channels.$inferSelect;
