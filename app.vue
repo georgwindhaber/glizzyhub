@@ -1,3 +1,6 @@
 <template>
-  <div class="bg-red-600">hello world</div>
+  <div class="h-full w-full bg-amber-200">
+    <nuxt-route-announcer />
+    <nuxt-page />
+  </div>
 </template>
