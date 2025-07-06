@@ -9,6 +9,27 @@ export const youtubeChannels = [
     handle: "@LemonadeStandPodcast",
   },
   {
+    handle: "@AtriocVODs",
+  },
+  {
     handle: "@LilAClip",
+  },
+  {
+    handle: "@AtriocsArchive",
+  },
+  {
+    handle: "@CoffeeCow",
+  },
+  {
+    handle: "@SmallAReacts",
+  },
+  {
+    handle: "@AtriocGlizzyClips",
+  },
+  {
+    handle: "@BiggerAClips",
+  },
+  {
+    handle: "@Atreactstovideos",
   },
 ];

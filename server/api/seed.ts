@@ -73,10 +73,10 @@ const fetchVideosFromPlaylist = async (
       publishedAt: new Date(video.snippet.publishedAt),
       title: video.snippet.title,
       description: video.snippet.description,
-      smallThumbnailUrl: video.snippet.thumbnails.default.url,
-      mediumThumbnailUrl: video.snippet.thumbnails.medium.url,
-      standardThumbnailUrl: video.snippet.thumbnails.standard.url,
-      highThumbnailUrl: video.snippet.thumbnails.high.url,
+      smallThumbnailUrl: video.snippet.thumbnails.default?.url,
+      mediumThumbnailUrl: video.snippet.thumbnails.medium?.url,
+      standardThumbnailUrl: video.snippet.thumbnails.standard?.url,
+      highThumbnailUrl: video.snippet.thumbnails.high?.url,
       maxresThumbnailUrl: video.snippet.thumbnails.maxres?.url,
       duration: video.contentDetails.duration,
       viewCount: video.statistics.viewCount,
@@ -107,19 +107,20 @@ const fetchVideosFromPlaylist = async (
       },
     });
 
-  // if (playlist.nextPageToken) {
-  //   await fetchVideosFromPlaylist(playlistId, playlist.nextPageToken);
-  // }
+  if (playlist.nextPageToken) {
+    await fetchVideosFromPlaylist(
+      playlistId,
+      channelId,
+      playlist.nextPageToken
+    );
+  }
 };
 
 export const seedYoutubeVideos = async () => {
   const existingChannels = await useDrizzle().select().from(channels);
 
   for (const channel of existingChannels) {
-    const result = fetchVideosFromPlaylist(
-      channel.allVideosPlaylist,
-      channel.channelId
-    );
+    fetchVideosFromPlaylist(channel.allVideosPlaylist, channel.channelId);
   }
 };
 
