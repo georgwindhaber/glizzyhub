@@ -1,8 +1,7 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 export const channels = sqliteTable("channels", {
-  channelId: integer("channel_id").primaryKey({ autoIncrement: true }),
-  youtubeChannelId: text("youtube_channel_id").notNull().unique(),
+  youtubeChannelId: text("youtube_channel_id").primaryKey(),
   handle: text("handle").notNull().unique(),
   name: text("name").notNull(),
   description: text("description"),
@@ -14,11 +13,10 @@ export const channels = sqliteTable("channels", {
 });
 
 export const videos = sqliteTable("videos", {
-  videoId: integer("video_id").primaryKey({ autoIncrement: true }),
-  channelId: integer("channel_id")
-    .references(() => channels.channelId)
-    .notNull(),
-  youtubeVideoId: text("youtube_video_id").notNull().unique(),
+  youtubeVideoId: text("youtube_video_id").primaryKey(),
+  youtubeChannelId: integer("youtube_channel_id").references(
+    () => channels.youtubeChannelId
+  ),
   publishedAt: integer("published_at", { mode: "timestamp" }),
   title: text("title").notNull(),
   description: text("description"),
