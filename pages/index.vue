@@ -3,8 +3,10 @@ const videosData = await useFetch("/api/videos");
 </script>
 
 <template>
-  <main>
-    <ul class="grid grid-cols-4 gap-5 p-5">
+  <main class="@container">
+    <ul
+      class="grid grid-cols-1 @2xl:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4 gap-5 p-5"
+    >
       <li
         v-for="video of videosData.data.value"
         :key="video.youtubeVideoId"
@@ -40,7 +42,7 @@ const videosData = await useFetch("/api/videos");
 
           <div class="flex flex-col flex-1">
             <nuxt-link
-              class="font-bold text-lg"
+              class="font-bold text-lg visited:bg-blue-600"
               :href="`https://youtube.com/watch?v=${video.youtubeVideoId}`"
               target="_blank"
             >

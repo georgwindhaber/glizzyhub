@@ -77,7 +77,7 @@ const fetchVideosFromPlaylist = async (
       mediumThumbnailUrl: video.snippet.thumbnails.medium.url,
       standardThumbnailUrl: video.snippet.thumbnails.standard.url,
       highThumbnailUrl: video.snippet.thumbnails.high.url,
-      maxresThumbnailUrl: video.snippet.thumbnails.maxres.url,
+      maxresThumbnailUrl: video.snippet.thumbnails.maxres?.url,
       duration: video.contentDetails.duration,
       viewCount: video.statistics.viewCount,
       likeCount: video.statistics.likeCount,
@@ -107,8 +107,6 @@ const fetchVideosFromPlaylist = async (
       },
     });
 
-  console.log(mappedVideoDetails);
-
   // if (playlist.nextPageToken) {
   //   await fetchVideosFromPlaylist(playlistId, playlist.nextPageToken);
   // }
@@ -117,15 +115,12 @@ const fetchVideosFromPlaylist = async (
 export const seedYoutubeVideos = async () => {
   const existingChannels = await useDrizzle().select().from(channels);
 
-  const channel = existingChannels[0];
-
-  const result = fetchVideosFromPlaylist(
-    channel.allVideosPlaylist,
-    channel.channelId
-  );
-
-  // for (const channel of existingChannels) {
-  // }
+  for (const channel of existingChannels) {
+    const result = fetchVideosFromPlaylist(
+      channel.allVideosPlaylist,
+      channel.channelId
+    );
+  }
 };
 
 export const seedYoutubeChannels = async () => {

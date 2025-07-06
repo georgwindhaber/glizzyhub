@@ -1,4 +1,5 @@
 import { channels, videos } from "../database/schema";
+import { desc } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   return await useDrizzle()
@@ -10,9 +11,10 @@ export default defineEventHandler(async (event) => {
       thumbnail: videos.mediumThumbnailUrl,
       youtubeVideoId: videos.youtubeVideoId,
       channelName: channels.name,
-      channelThumbnail: channels.mediumThumbnailUrl,
+      channelThumbnail: channels.smallThumbnailUrl,
       channelHandle: channels.handle,
     })
     .from(videos)
-    .leftJoin(channels, eq(videos.channelId, channels.channelId));
+    .leftJoin(channels, eq(videos.channelId, channels.channelId))
+    .orderBy(desc(videos.publishedAt));
 });
