@@ -42,7 +42,7 @@ const videosData = await useFetch("/api/videos");
 
           <div class="flex flex-col flex-1">
             <nuxt-link
-              class="font-bold text-lg visited:bg-blue-600"
+              class="font-bold text-lg"
               :href="`https://youtube.com/watch?v=${video.youtubeVideoId}`"
               target="_blank"
             >
