@@ -23,13 +23,13 @@ export default defineEventHandler(async (event) => {
       channelHandle: channels.handle,
     })
     .from(videos)
-    .leftJoin(channels, eq(videos.youtubeChannelId, channels.youtubeChannelId))
+    .innerJoin(channels, eq(videos.youtubeChannelId, channels.youtubeChannelId))
     .orderBy(desc(videos.publishedAt))
     .limit(50);
 
-  const refreshedVideos = await throtteledUpsertVideoDetails(
-    existingVideos.map((video) => video.youtubeVideoId)
-  );
+  // const refreshedVideos = await throtteledUpsertVideoDetails(
+  //   existingVideos.map((video) => video.youtubeVideoId)
+  // );
 
-  return refreshedVideos || existingVideos;
+  return existingVideos;
 });
