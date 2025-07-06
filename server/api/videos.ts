@@ -1,8 +1,16 @@
+import { throttle } from "~/utils/throttle";
 import { channels, videos } from "../database/schema";
 import { desc } from "drizzle-orm";
+import { upsertVideoDetails } from "../utils/videos";
+
+const throtteledUpsertVideoDetails = throttle(
+  upsertVideoDetails,
+  "upsert-videos",
+  120
+);
 
 export default defineEventHandler(async (event) => {
-  return await useDrizzle()
+  const existingVideos = await useDrizzle()
     .select({
       title: videos.title,
       duration: videos.duration,
@@ -15,6 +23,13 @@ export default defineEventHandler(async (event) => {
       channelHandle: channels.handle,
     })
     .from(videos)
-    .leftJoin(channels, eq(videos.channelId, channels.channelId))
-    .orderBy(desc(videos.publishedAt));
+    .leftJoin(channels, eq(videos.youtubeChannelId, channels.youtubeChannelId))
+    .orderBy(desc(videos.publishedAt))
+    .limit(50);
+
+  const refreshedVideos = await throtteledUpsertVideoDetails(
+    existingVideos.map((video) => video.youtubeVideoId)
+  );
+
+  return refreshedVideos || existingVideos;
 });
