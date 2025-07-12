@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   video: {
     youtubeVideoId: string;
     thumbnail: string;
@@ -11,11 +11,49 @@ defineProps<{
     views: number;
     publishedAt: string;
   };
+  isLazyLoadObserver?: boolean;
 }>();
+
+const emit = defineEmits<{
+  (e: "lazy-load-triggered"): void;
+}>();
+
+const observer = ref<IntersectionObserver | null>(null);
+const element = useTemplateRef("root");
+
+onMounted(() => {
+  if (props.isLazyLoadObserver) {
+    observer.value = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            emit("lazy-load-triggered");
+            observer.value?.disconnect();
+          }
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (element.value) {
+      observer.value.observe(element.value);
+    } else {
+      console.warn("Could not start lazy load - html element not found");
+    }
+  }
+});
+
+onUnmounted(() => {
+  observer.value?.disconnect();
+});
 </script>
 
 <template>
-  <li :key="video.youtubeVideoId" class="flex flex-col gap-2 rounded-xl">
+  <li
+    :key="video.youtubeVideoId"
+    class="flex flex-col gap-2 rounded-xl"
+    ref="root"
+  >
     <nuxt-link
       class="relative"
       :href="`https://youtube.com/watch?v=${video.youtubeVideoId}`"

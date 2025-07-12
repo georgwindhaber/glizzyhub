@@ -2,6 +2,12 @@ import { throttle } from "~/utils/throttle";
 import { channels, videos } from "../database/schema";
 import { desc } from "drizzle-orm";
 import { upsertVideoDetails } from "../utils/videos";
+import z from "zod";
+import { PAGE_SIZE } from "~/utils/constants";
+
+const querySchema = z.object({
+  page: z.coerce.number().default(0),
+});
 
 const throtteledUpsertVideoDetails = throttle(
   upsertVideoDetails,
@@ -10,6 +16,8 @@ const throtteledUpsertVideoDetails = throttle(
 );
 
 export default defineEventHandler(async (event) => {
+  const query = await getValidatedQuery(event, querySchema.parse);
+
   const existingVideos = await useDrizzle()
     .select({
       title: videos.title,
@@ -25,8 +33,8 @@ export default defineEventHandler(async (event) => {
     .from(videos)
     .innerJoin(channels, eq(videos.youtubeChannelId, channels.youtubeChannelId))
     .orderBy(desc(videos.publishedAt))
-    .limit(50);
-
+    .limit(PAGE_SIZE)
+    .offset(query.page * PAGE_SIZE);
   // const refreshedVideos = await throtteledUpsertVideoDetails(
   //   existingVideos.map((video) => video.youtubeVideoId)
   // );
