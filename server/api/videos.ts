@@ -11,11 +11,7 @@ const querySchema = z.object({
   maxLength: z.optional(z.coerce.number()),
 });
 
-const throtteledUpsertVideoDetails = throttle(
-  upsertVideoDetails,
-  "upsert-videos",
-  120
-);
+let updateVideos: Array<string> = [];
 
 export default defineEventHandler(async (event) => {
   const query = await getValidatedQuery(event, querySchema.parse);
@@ -28,6 +24,7 @@ export default defineEventHandler(async (event) => {
       publishedAt: videos.publishedAt,
       thumbnail: videos.mediumThumbnailUrl,
       youtubeVideoId: videos.youtubeVideoId,
+      lastUpdatedAt: videos.lastUpdatedAt,
       channelName: channels.name,
       channelThumbnail: channels.smallThumbnailUrl,
       channelHandle: channels.handle,
@@ -47,9 +44,17 @@ export default defineEventHandler(async (event) => {
     .orderBy(desc(videos.publishedAt))
     .limit(PAGE_SIZE)
     .offset(query.page * PAGE_SIZE);
-  // const refreshedVideos = await throtteledUpsertVideoDetails(
-  //   existingVideos.map((video) => video.youtubeVideoId)
-  // );
+
+  for (const video of existingVideos) {
+    if (Date.now() - video.lastUpdatedAt.getTime() > 5 * 60 * 1000) {
+      updateVideos.push(video.youtubeVideoId);
+
+      if (updateVideos.length === 50) {
+        await upsertVideoDetails(updateVideos);
+        updateVideos = [];
+      }
+    }
+  }
 
   return existingVideos;
 });
