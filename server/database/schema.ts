@@ -26,6 +26,7 @@ export const videos = sqliteTable("videos", {
   standardThumbnailUrl: text("standard_thumbnail_url"),
   maxresThumbnailUrl: text("maxres_thumbnail_url"),
   duration: text("duration").notNull(),
+  durationInSeconds: integer("duration_in_seconds"),
   viewCount: integer("view_count").notNull().default(0),
   likeCount: integer("like_count"),
   commentCount: integer("comment_count"),

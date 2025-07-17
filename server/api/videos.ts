@@ -1,12 +1,14 @@
 import { throttle } from "~/utils/throttle";
 import { channels, videos } from "../database/schema";
-import { desc } from "drizzle-orm";
+import { desc, gte, lte, and } from "drizzle-orm";
 import { upsertVideoDetails } from "../utils/videos";
 import z from "zod";
 import { PAGE_SIZE } from "~/utils/constants";
 
 const querySchema = z.object({
   page: z.coerce.number().default(0),
+  minLength: z.optional(z.coerce.number()),
+  maxLength: z.optional(z.coerce.number()),
 });
 
 const throtteledUpsertVideoDetails = throttle(
@@ -32,6 +34,16 @@ export default defineEventHandler(async (event) => {
     })
     .from(videos)
     .innerJoin(channels, eq(videos.youtubeChannelId, channels.youtubeChannelId))
+    .where(
+      and(
+        query.minLength
+          ? gte(videos.durationInSeconds, query.minLength)
+          : undefined,
+        query.maxLength
+          ? lte(videos.durationInSeconds, query.maxLength)
+          : undefined
+      )
+    )
     .orderBy(desc(videos.publishedAt))
     .limit(PAGE_SIZE)
     .offset(query.page * PAGE_SIZE);

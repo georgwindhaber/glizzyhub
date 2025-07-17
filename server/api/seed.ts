@@ -5,7 +5,7 @@ import { z } from "zod";
 import { upsertVideoDetails } from "../utils/videos";
 
 const seedSchema = z.object({
-  type: z.enum(["channels", "videos"]),
+  type: z.enum(["channels", "videos", "migration"]),
 });
 
 export default defineEventHandler(async (event) => {
