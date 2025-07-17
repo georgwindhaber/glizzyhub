@@ -46,6 +46,7 @@ export default defineEventHandler(async (event) => {
     .offset(query.page * PAGE_SIZE);
 
   for (const video of existingVideos) {
+    // If video didn't get updated in the last 5mins, fetch data from youtube again
     if (Date.now() - video.lastUpdatedAt.getTime() > 5 * 60 * 1000) {
       updateVideos.push(video.youtubeVideoId);
 
