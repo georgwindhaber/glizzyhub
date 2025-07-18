@@ -9,4 +9,12 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "en",
+      },
+      title: "Glizzyhub",
+    },
+  },
 });

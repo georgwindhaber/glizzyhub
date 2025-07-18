@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import type { VideoPreview } from "#imports";
 
+useSeoMeta({
+  description:
+    "All your content from the Atrioc universe in one convenient place!",
+  title: "Glizzyhub 🌭",
+});
+
 const videos = ref<VideoPreview>([]);
 
 const query = ref({
