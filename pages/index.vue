@@ -29,8 +29,6 @@ const fetchMoreVideos = async () => {
 const applyFilter = async () => {
   videos.value = [];
   await fetchVideos();
-
-  console.log(videos.value);
 };
 
 await fetchVideos();
