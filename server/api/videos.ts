@@ -1,7 +1,5 @@
-import { throttle } from "~/utils/throttle";
 import { channels, videos } from "../database/schema";
 import { desc, gte, lte, and } from "drizzle-orm";
-import { upsertVideoDetails } from "../utils/videos";
 import z from "zod";
 import { PAGE_SIZE } from "~/utils/constants";
 
@@ -10,8 +8,6 @@ const querySchema = z.object({
   minLength: z.optional(z.coerce.number()),
   maxLength: z.optional(z.coerce.number()),
 });
-
-let updateVideos: Array<string> = [];
 
 export default defineEventHandler(async (event) => {
   const query = await getValidatedQuery(event, querySchema.parse);
@@ -44,18 +40,6 @@ export default defineEventHandler(async (event) => {
     .orderBy(desc(videos.publishedAt))
     .limit(PAGE_SIZE)
     .offset(query.page * PAGE_SIZE);
-
-  for (const video of existingVideos) {
-    // If video didn't get updated in the last 5mins, fetch data from youtube again
-    if (Date.now() - video.lastUpdatedAt.getTime() > 5 * 60 * 1000) {
-      updateVideos.push(video.youtubeVideoId);
-
-      if (updateVideos.length === 50) {
-        await upsertVideoDetails(updateVideos);
-        updateVideos = [];
-      }
-    }
-  }
 
   return existingVideos;
 });
